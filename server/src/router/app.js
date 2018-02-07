@@ -22,35 +22,30 @@ app.use(function(req, res, next) {
 });
 
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-//   extended: true
-// }));
 
 app.post('/data/', function(req, res) {
 
-  // connection.connect(function(err) {
-  //   if (err) throw err;
-  // });
-  // console.log(req.body.sql);
-  connection.query(req.body.sql, function (err, rows, fields) {
-    if (err) throw err
+  connection.getConnection(function(err, connection) {
+    if (err) throw err;
 
-    const result = rows;
-    result.unshift([]);
+    connection.query(req.body.sql, function (err, rows, fields) {
+      if (err) throw err
 
-    for(let i = 0; i < fields.length; i++) {
-      const newObj = {
-        "name" : fields[i].name,
-        "type" : fields[i].type
+      const result = rows;
+      result.unshift([]);
+
+      for(let i = 0; i < fields.length; i++) {
+        const newObj = {
+          "name" : fields[i].name,
+          "type" : fields[i].type
+        }
+        result[0].push(newObj)
       }
-      result[0].push(newObj)
-    }
 
-    // console.log(result);
-    res.json(result);
-  })
-
-  // connection.end();
+      res.json(result);
+      connection.release();
+    })
+  });
 });
 
 app.get('/data/', function(req, res) {

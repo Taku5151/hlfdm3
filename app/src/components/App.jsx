@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import logo from './../images/HLFLogo.png'
 import './../css/reset.css';
 import './../css/App.css';
 
-import DataSet from './dataset.js';
-import _Util from './util.js';
+import DataSet from './../objects/dataset.js';
+import DataModule from './DataModule.jsx';
+import * as Util from './util.js';
 // import InputManager from './inputmanager.js';
 
 const demandDS = new DataSet("demand");
@@ -13,7 +14,6 @@ const invtxnDS = new DataSet("invrftxn");
 const invlineDS = new DataSet("invrfline");
 const reserveDS = new DataSet("reserve");
 const receiptsDS = new DataSet("receipts");
-const Util = new _Util();
 // const input = new InputManager();
 
 let skutextbox;
@@ -394,7 +394,7 @@ function executequery() {
   demandDS.clearFilter();
   demandDS.addFilter("Month", `>='${fromtextbox.value}'`);
   demandDS.addFilter("Month", `<='${Util.UtilGetSQLDate(new Date(toDate.getFullYear(), toDate.getMonth() + 6, toDate.getDate()))}'`);
-  demandDS.addFilter("Sku", `='${skutextbox.value}'`);
+  demandDS.addFilter("Sku", `='${skutextbox.value}'`)  ;
   demandDS.refreshData();
 
   invtxnDS.clearFilter();
@@ -452,10 +452,6 @@ function executequery() {
 
 
 export default class App extends Component {
-  // static propTypes = {
-  //     addTodo: PropTypes.func.isRequired,
-  // }
-  //
   constructor(props) {
     super(props);
 
@@ -471,20 +467,20 @@ export default class App extends Component {
   }
 
   changeHandler = (e) => {
-      switch(e.target.name) {
-        case "skutextbox":
-          this.setState({ skuValue: e.target.value })
-          break;
-        case "fromtextbox":
-          this.setState({ fromValue: e.target.value })
-          break;
-        case "totextbox":
-          this.setState({ toValue: e.target.value })
-          break;
-        default:
-          break;
+    switch(e.target.name) {
+      case "skutextbox":
+      this.setState({ skuValue: e.target.value })
+      break;
+      case "fromtextbox":
+      this.setState({ fromValue: e.target.value })
+      break;
+      case "totextbox":
+      this.setState({ toValue: e.target.value })
+      break;
+      default:
+      break;
 
-      }
+    }
   }
 
   resetInput = () => {
@@ -503,7 +499,7 @@ export default class App extends Component {
     return (
       <section>
         <header>
-          <img src={logo} />
+          <img src={logo} alt=""/>
           <h1>HLFDM</h1>
           <div>
             <label>SKU:</label>

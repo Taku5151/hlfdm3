@@ -4,22 +4,25 @@ export default class DataSet {
   constructor(sqlTable) {
     this.dimKeys = [];
     this.valueKeys = [];
-    this.current = {};
-    this.current.x = null;
-    this.current.y = null;
-    this.current.value = null;
-    this.data = {};
-    this.data.raw = null;
-    this.data.dimX = [];
-    this.data.dimY = [];
-    this.data.XTotals = {};
-    this.data.YTotals = {};
-    this.data.GrandTotal = 0.0;
-    this.data.compiled = {};
-    this.chart = {};
-    this.chart.labels = [];
-    this.chart.datasets = [];
-    this.chart.axes = [];
+    this.current = {
+      x: null,
+      y: null,
+      value: null
+    };
+    this.data = {
+      raw: null,
+      dimX: [],
+      dimY: [],
+      XTotals: {},
+      YTotals: {},
+      GrandTotal: 0.0,
+      compiled: {}
+    };
+    this.chart = {
+      labels: [],
+      datasets: [],
+      axes: []
+    };
     this.table = sqlTable;
     this.filters = [];
     this.domElement = null;
@@ -29,12 +32,12 @@ export default class DataSet {
   }
 
   addDim(group, name, field) {
-    const newDim = {group: group, name: name, field: field};
+    const newDim = {group, name, field};
     this.dimKeys.push(newDim);
   }
 
   addValue(group, name, field) {
-    const newDim = {group: group, name: name, field: field};
+    const newDim = {group, name, field};
     this.valueKeys.push(newDim);
   }
 
@@ -71,7 +74,7 @@ export default class DataSet {
   }
   addFilter(name, criteria) {
     const dimKey = this._getKeyFromName(name, this.dimKeys);
-    this.filters.push({dimKey: dimKey, criteria: criteria});
+    this.filters.push({dimKey, criteria});
   }
 
   clearFilter() {
@@ -271,8 +274,8 @@ export default class DataSet {
   }
 
   _ajaxGetData(sql, callback) {
-    fetch("./../../../../data/", {
-      method: 'POST', // or 'PUT'
+    fetch("/data/", {
+      method: 'POST',
       body: JSON.stringify({sql}),
       headers: new Headers({
         'Content-Type': 'application/json'
@@ -282,31 +285,5 @@ export default class DataSet {
     }).then((data) => {
       callback(data)
     });
-
-    // const formData = new FormData();
-    // formData.append('sql', sql);
-    //
-    // fetch("./../php/ajaxdatasetquery.php", {
-    //   method: 'POST', // or 'PUT'
-    //   body: formData
-    // }).then((response) => {
-    //   return response.json()
-    // }).then((data) => {
-    //   callback(data)
-    // });
-
-
-    // $.ajax("php/ajaxdatasetquery.php", {
-    //   type: "POST",
-    //   data: {
-    //     sql: sql
-    //   },
-    //   success: (data) => {
-    //     callback(data);
-    //   },
-    //   error: (data) => {
-    //     console.log("Error with _ajaxGetData", data);
-    //   }
-    // });
   }
 }
